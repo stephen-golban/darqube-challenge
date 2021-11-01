@@ -1,8 +1,8 @@
 import { NextPage } from 'next'
 import React from 'react'
 
-const Index: NextPage = () => {
+const Bookmarks: NextPage = () => {
   return <div></div>
 }
 
-export default Index
+export default Bookmarks
