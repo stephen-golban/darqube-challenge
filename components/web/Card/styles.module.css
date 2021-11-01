@@ -1,0 +1,6 @@
+.card {
+  background-image: linear-gradient(rgba(15, 31, 44, 0), rgb(5, 20, 27));
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
