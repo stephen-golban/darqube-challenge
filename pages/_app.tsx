@@ -1,3 +1,5 @@
+import '@assets/main.css'
+
 import { Head } from '@components/web'
 import type { AppProps } from 'next/app'
 
