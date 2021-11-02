@@ -1,6 +1,6 @@
 import React from 'react'
 import { Navbar } from '../Navbar'
-import { TWLayout, TWLayoutInner } from './tw-styled'
+import { TWLayout, TWLayoutInner, TWLayoutInnerContent } from './tw-styled'
 
 interface IProps {
   divide_grid?: boolean
@@ -10,8 +10,12 @@ interface IProps {
 const Layout: React.FC<IProps> = ({ divide_grid, children }) => {
   return (
     <TWLayout>
-      <Navbar />
-      <TWLayoutInner $divide={divide_grid!}>{children}</TWLayoutInner>
+      <TWLayoutInner>
+        <Navbar />
+        <TWLayoutInnerContent $divide={divide_grid !== undefined ? divide_grid : false}>
+          {children}
+        </TWLayoutInnerContent>
+      </TWLayoutInner>
     </TWLayout>
   )
 }

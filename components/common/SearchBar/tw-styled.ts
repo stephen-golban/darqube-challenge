@@ -6,6 +6,7 @@ export const TWSearchBar = tw.input`
     text-xs
     h-[30px]
     w-[162px]
+    md:w-full
     text-white
     bg-[#191818]
     placeholder-[#686868]
@@ -19,5 +20,6 @@ export const TWSearchBarIcon = tw(SearchIcon)`
 export const TWSearchBarWrapper = tw.div`
     flex
     relative
+    md:w-full
     items-center
 `

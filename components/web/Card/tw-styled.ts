@@ -7,9 +7,12 @@ type Card = {
 export const TWCard = tw.div<Card>`
   flex
   flex-col
+  opacity-50
+  rounded-md
   justify-between
+  bg-blend-overlay
   ${(p) => (p.$latest ? 'py-5 px-[30px]' : 'py-5 px-[25px]')}
-  ${(p) => (p.$latest ? 'w-[478px] h-[628px]' : 'w-[280px] h-[425px]')}
+  ${(p) => (p.$latest ? 'w-[478px] h-[628px] xl:w-full' : 'w-[280px] 2xl:w-full h-[425px]')}
 `
 export const TWCardTag = tw.div`
   flex

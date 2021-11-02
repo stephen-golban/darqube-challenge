@@ -1,18 +1,26 @@
 import tw from 'tailwind-styled-components'
 
-export const TWLayout = tw.div`
-    w-full
-    h-screen
-    p-[40px]
-    bg-[#242525]
-    overflow-hidden
-`
 type Inner = {
   $divide: boolean
 }
 
-export const TWLayoutInner = tw.main<Inner>`
-    grid
-    ${(p) => (p.$divide ? 'gap-4' : '')}
-    ${(p) => (p.$divide ? 'grid-cols-3' : '')}
+export const TWLayout = tw.div`
+    flex
+    w-full
+    py-10
+    px-0
+    2xl:px-10
+    min-h-screen
+    justify-center
+    bg-[#242525]
+`
+
+export const TWLayoutInner = tw.div`
+    2xl:w-full
+    w-[1439px]
+`
+export const TWLayoutInnerContent = tw.div<Inner>`
+    flex
+    xl:flex-col
+    justify-between
 `

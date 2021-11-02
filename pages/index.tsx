@@ -1,69 +1,62 @@
 import React from 'react'
-import { GetStaticProps, NextPage } from 'next'
-import { Layout } from '@components/common'
-import { Card } from '@components/web'
 import { API } from '@api/base'
 import { INews } from '@typings/news'
-import moment from 'moment'
+import { Layout } from '@components/common'
+import { GetStaticProps, NextPage } from 'next'
+import { Card, Pagination } from '@components/web'
+import { UtilityService } from '@lib/utility-service'
+import { useAppDispatch, useAppSelector } from '@store/hooks'
+import { TWNewsLatestSection, TWNewsWrapper, TWNewsWrapperSection } from '@assets/news-tw-styled'
+import { setInitialNewsSlice } from '@store/slices'
 
 interface IProps {
   latest: INews
-  news: INews[]
+  initialNews: INews[]
 }
 
-const Index: NextPage<IProps> = ({ latest, news }) => {
-  console.log(latest)
+const Index: NextPage<IProps> = ({ latest, initialNews }) => {
+  const { news, searched } = useAppSelector((state) => state.news)
+  const dispatch = useAppDispatch()
+
+  React.useEffect(() => {
+    dispatch(setInitialNewsSlice(initialNews))
+    // eslint-disable-next-line
+  }, [initialNews])
+
   return (
     <Layout divide_grid>
-      <section>
-        <Card
-          key={latest.id}
-          bg_image={latest.image}
-          headline={latest.headline}
-          tag_text={latest.related}
-          is_latest
-          publish_date={latest.datetime as unknown as string}
-        />
-      </section>
-      <section className="col-span-2 grid grid-cols-3 grid-flow-row gap-3">
-        {news.map((item) => (
-          <Card
-            key={item.id}
-            bg_image={item.image}
-            headline={item.headline}
-            tag_text={item.related}
-            publish_date={item.datetime as unknown as string}
-          />
-        ))}
-      </section>
+      <TWNewsLatestSection>
+        <Card news={latest} is_latest />
+      </TWNewsLatestSection>
+      <TWNewsWrapperSection>
+        <TWNewsWrapper>{news !== null && news.map((item) => <Card key={item.id} news={item} />)}</TWNewsWrapper>
+        <Pagination news={searched.length > 0 ? searched : initialNews} />
+      </TWNewsWrapperSection>
     </Layout>
   )
 }
 
 export const getStaticProps: GetStaticProps = async () => {
   const { data }: { data: INews[] } = await API
-
-  const formatDate = (index: number) =>
-    moment(new Date(+data[index].datetime * 1000))
-      .format('DD/MMM')
-      .replace('/', ' ')
+  const format = (index: number) => UtilityService.formatDate(index, data)
 
   const latest: INews = {
     ...data[0],
-    datetime: formatDate(0),
+    datetime: format(0),
   }
-  const news = data.map((item, index) => {
-    return {
+
+  const initialNews = data
+    .map((item, index) => ({
       ...item,
-      datetime: formatDate(index),
-    }
-  })
+      datetime: format(index),
+    }))
+    .filter((item) => item.id !== latest.id)
+
   return {
     props: {
-      news,
+      initialNews,
       latest,
     },
-    revalidate: 10,
   }
 }
 

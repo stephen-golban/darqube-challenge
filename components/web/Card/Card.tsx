@@ -1,59 +1,76 @@
-import { ArrowCircleIcon, FavoriteIcon } from '@components/Icons'
 import React from 'react'
-import styles from './styles.module.css'
+import { INews } from '@typings/news'
+import { useAppDispatch, useAppSelector } from '@store/hooks'
+import { setBookMarkSlice, unsetBookMarkSlice } from '@store/slices'
+import { ArrowCircleIcon, FavoriteIcon } from '@components/Icons'
 import {
   TWCard,
-  TWCardBottom,
-  TWCardHeadLine,
-  TWCardImportantTag,
+  TWCardTop,
   TWCardTag,
+  TWCardBottom,
   TWCardToolBar,
+  TWCardHeadLine,
   TWCardToolBarDate,
+  TWCardImportantTag,
   TWCardToolBarReadButton,
   TWCardToolBarReadDivider,
   TWCardToolbarReadWrapper,
-  TWCardTop,
 } from './tw-styled'
+import UnFavoriteIcon from '@components/Icons/UnFavoriteIcon'
+import { toast } from 'react-toastify'
 
 interface IProps {
-  tag_text: string
-  bg_image: string
-  headline: string
+  news: INews
   is_latest?: boolean
-  publish_date: any
 }
 
-const Card: React.FC<IProps> = (props) => {
+const Card: React.FC<IProps> = ({ is_latest, news }) => {
+  const dispatch = useAppDispatch()
+  const { bookmarks } = useAppSelector((state) => state.news)
+
+  const toggleFav = (fav: boolean) => {
+    if (fav) {
+      dispatch(unsetBookMarkSlice(news.id))
+      toast.warn('Successfully removed from bookmarks!')
+    } else {
+      dispatch(setBookMarkSlice(news.id))
+      toast.success('Successfully added to bookmarks!')
+    }
+  }
+
   return (
     <TWCard
-      $latest={props.is_latest}
-      className={styles.card}
+      $latest={is_latest}
       style={{
-        background: `rgb(0,0,0),linear-gradient(90deg, rgba(0,0,0,0.3393732492997199) 0%, rgba(0,73,101,0.7959558823529411) 100%, rgba(0,0,0,0.7259278711484594) 100%, url('${props.bg_image}')`,
+        backgroundImage: `url('${news.image}'), linear-gradient(180deg, rgba(28, 58, 82, 0) 0%, #05141b 100%)`,
       }}
     >
       <TWCardTop>
-        <TWCardTag>{props.tag_text}</TWCardTag>
-        {props.is_latest ? <TWCardImportantTag>latest research</TWCardImportantTag> : null}
+        <TWCardTag>{news.related}</TWCardTag>
+        {is_latest ? <TWCardImportantTag>latest research</TWCardImportantTag> : null}
       </TWCardTop>
       <TWCardBottom>
-        <TWCardHeadLine $latest={props.is_latest}>
-          {props.headline.length > 69 ? props.headline.slice(0, 70) + '...' : props.headline}
+        <TWCardHeadLine $latest={is_latest}>
+          {news.headline.length > 69 ? news.headline.slice(0, 70) + '...' : news.headline}
         </TWCardHeadLine>
         <TWCardToolBar>
-          {props.is_latest ? (
+          {is_latest ? (
             <TWCardToolbarReadWrapper>
               <TWCardToolBarReadButton>
                 <ArrowCircleIcon className="mr-4" />
                 Read the research
               </TWCardToolBarReadButton>
               <TWCardToolBarReadDivider />
-              <TWCardToolBarDate>{props.publish_date}</TWCardToolBarDate>
+              <TWCardToolBarDate>{news.datetime}</TWCardToolBarDate>
             </TWCardToolbarReadWrapper>
           ) : (
-            <TWCardToolBarDate>{props.publish_date}</TWCardToolBarDate>
+            <TWCardToolBarDate>{news.datetime}</TWCardToolBarDate>
           )}
-          <FavoriteIcon className="opacity-50 cursor-pointer" />
+          {bookmarks.find((item) => item === news.id) ? (
+            <UnFavoriteIcon className="cursor-pointer text-white" onClick={() => toggleFav(true)} />
+          ) : (
+            <FavoriteIcon className="opacity-50 cursor-pointer" onClick={() => toggleFav(false)} />
+          )}
         </TWCardToolBar>
       </TWCardBottom>
     </TWCard>
