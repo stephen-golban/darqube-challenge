@@ -57,6 +57,12 @@ const Index: NextPage<IProps> = ({ latest, initialNews }) => {
 
 export const getStaticProps: GetStaticProps = async () => {
   const { data }: AxiosResponse<INews[]> = await getNewsRequest()
+
+  if (!data)
+    return {
+      notFound: true,
+    }
+
   const format = (index: number) => UtilityService.formatDate(index, data)
 
   const latest: INews = { ...data[0], datetime: format(0) }
@@ -65,11 +71,7 @@ export const getStaticProps: GetStaticProps = async () => {
     ...item,
     datetime: format(index),
   }))
-  if (!data) {
-    return {
-      notFound: true,
-    }
-  }
+
   return {
     props: {
       initialNews,
