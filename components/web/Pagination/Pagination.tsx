@@ -1,45 +1,33 @@
 import React from 'react'
 import { INews } from '@typings/news'
-import { setNewsSlice } from '@store/slices'
-import { useAppDispatch } from '@store/hooks'
-import { UtilityService } from '@lib/utility-service'
+import { PaginationProps } from 'rc-pagination'
 import { TWPagination, TWPaginationBtn, TWPaginationLeft, TWPaginationRight } from './tw-styled'
 
-interface IProps {
-  news: INews[]
+interface IProps extends PaginationProps {
+  data: INews[]
 }
 
-const Pagination: React.FC<IProps> = ({ news }) => {
-  const dispatch = useAppDispatch()
-  const [currentPage, setCurrentPage] = React.useState<number>(1)
+const Pagination: React.FC<IProps> = ({ data, ...props }) => {
+  const paginationButtonRender = (_page: number, type: string, element: React.ReactNode): React.ReactNode => {
+    if (type === 'prev') return <TWPaginationBtn title="prev">Prev</TWPaginationBtn>
+    if (type === 'next') return <TWPaginationBtn title="next">next</TWPaginationBtn>
+    return element
+  }
 
-  React.useEffect(() => {
-    if (news !== null) dispatch(setNewsSlice(news.slice(0, 6)))
-    // eslint-disable-next-line
-  }, [])
-
-  React.useEffect(() => {
-    dispatch(setNewsSlice(UtilityService.paginate(news, currentPage)))
-    // eslint-disable-next-line
-  }, [currentPage])
-
-  const nextPage = () => setCurrentPage(currentPage + 1)
-  const prevPage = () => setCurrentPage(currentPage - 1)
+  const renderTotal = (total: number, range: [number, number]): React.ReactNode => (
+    <TWPaginationLeft>
+      {range[0]} - {range[1]} <span className="ml-1.5 opacity-25">out of {total}</span>
+    </TWPaginationLeft>
+  )
 
   return (
-    <TWPagination>
-      <TWPaginationLeft>
-        {currentPage} - {Math.ceil(news.length / 6)} <span className="ml-1.5 opacity-25">out of {news.length}</span>
-      </TWPaginationLeft>
-      <TWPaginationRight>
-        {currentPage <= 1 ? null : <TWPaginationBtn onClick={() => prevPage()}>previous</TWPaginationBtn>}
-        {currentPage < Math.ceil(news.length / 6) ? (
-          <TWPaginationBtn className="ml-4" onClick={() => nextPage()}>
-            next
-          </TWPaginationBtn>
-        ) : null}
-      </TWPaginationRight>
-    </TWPagination>
+    <TWPagination
+      {...props}
+      total={data.length}
+      showTotal={renderTotal}
+      className="modified-pagination"
+      itemRender={paginationButtonRender}
+    />
   )
 }
 

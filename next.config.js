@@ -1,5 +1,8 @@
 /** @type {import('next').NextConfig} */
 module.exports = {
-  reactStrictMode: true,
   swcMinify: true,
+  reactStrictMode: true,
+  experimental: {
+    reactMode: 'concurrent',
+  },
 }

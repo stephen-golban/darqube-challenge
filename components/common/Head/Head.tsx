@@ -4,12 +4,14 @@ import { useRouter } from 'next/router'
 
 const Head: React.FC = () => {
   const { pathname } = useRouter()
+  const path = pathname.replace('/', ' ')
+  const pathText = path.charAt(1).toUpperCase() + path.slice(2)
   return (
     <>
       <NextHead>
         <meta charSet="utf-8" />
         <link rel="icon" href="/favicon.ico" />
-        <title>{pathname === '/' ? 'News' : pathname.toUpperCase()} - DarQube Challenge</title>
+        <title>{pathname === '/' ? 'News' : pathText} - DarQube Challenge</title>
       </NextHead>
     </>
   )

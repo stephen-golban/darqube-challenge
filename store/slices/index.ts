@@ -1,8 +1,2 @@
-export {
-  default as newsSlice,
-  setNewsSlice,
-  setBookMarkSlice,
-  unsetBookMarkSlice,
-  setSearchedNewsSlice,
-  setInitialNewsSlice,
-} from './news-slice'
+export * from './news-slice'
+export * from './search-slice'

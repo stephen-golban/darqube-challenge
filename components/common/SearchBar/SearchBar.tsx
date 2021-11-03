@@ -1,24 +1,20 @@
-import { useAppDispatch } from '@store/hooks'
-import { setSearchedNewsSlice } from '@store/slices'
 import React from 'react'
+import { setSearchValueSlice } from '@store/slices'
+import { useAppDispatch, useAppSelector } from '@store/hooks'
 import { TWSearchBar, TWSearchBarIcon, TWSearchBarWrapper } from './tw-styled'
 
 const SearchBar: React.FC = () => {
   const dispatch = useAppDispatch()
-  const [val, setVal] = React.useState<string>('')
-
-  React.useEffect(() => {
-    if (val.length > 0) dispatch(setSearchedNewsSlice(val))
-  }, [val])
+  const { value } = useAppSelector((state) => state.search)
 
   return (
     <TWSearchBarWrapper>
       <TWSearchBarIcon />
       <TWSearchBar
+        value={value}
         placeholder="Search"
         style={{ outline: 'none' }}
-        value={val}
-        onChange={(e) => setVal(e.target.value)}
+        onChange={(e) => dispatch(setSearchValueSlice(e.target.value))}
       />
     </TWSearchBarWrapper>
   )

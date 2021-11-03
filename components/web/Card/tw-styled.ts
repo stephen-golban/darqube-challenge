@@ -7,12 +7,13 @@ type Card = {
 export const TWCard = tw.div<Card>`
   flex
   flex-col
-  opacity-50
+  bg-cover
+  bg-center
   rounded-md
   justify-between
   bg-blend-overlay
   ${(p) => (p.$latest ? 'py-5 px-[30px]' : 'py-5 px-[25px]')}
-  ${(p) => (p.$latest ? 'w-[478px] h-[628px] xl:w-full' : 'w-[280px] 2xl:w-full h-[425px]')}
+  ${(p) => (p.$latest ? 'w-[478px] h-[628px] xl:w-full' : 'w-[280px] h-[425px]')}
 `
 export const TWCardTag = tw.div`
   flex
@@ -50,14 +51,21 @@ export const TWCardTop = tw.div`
 export const TWCardBottom = tw.div`
   w-full
 `
-export const TWCardHeadLine = tw.div<Card>`
+export const TWCardHeadLine = tw.a<Card>`
   break-words
+  text-opacity-100
   text-white
   ${(p) => (p.$latest ? 'text-2xl leading-8' : 'text-[20px] leading-[28px]')}
 `
+export const TWCardSummary = tw.div`
+  break-words
+  text-white
+  text-xs
+  opacity-80
+`
 export const TWCardToolBar = tw.div`
   flex
-  mt-8
+  mt-2
   w-full
   items-center
   justify-between

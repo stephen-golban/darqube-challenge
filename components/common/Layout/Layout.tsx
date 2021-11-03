@@ -12,9 +12,7 @@ const Layout: React.FC<IProps> = ({ divide_grid, children }) => {
     <TWLayout>
       <TWLayoutInner>
         <Navbar />
-        <TWLayoutInnerContent $divide={divide_grid !== undefined ? divide_grid : false}>
-          {children}
-        </TWLayoutInnerContent>
+        <TWLayoutInnerContent $divide={divide_grid}>{children}</TWLayoutInnerContent>
       </TWLayoutInner>
     </TWLayout>
   )

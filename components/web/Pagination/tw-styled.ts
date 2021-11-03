@@ -1,15 +1,18 @@
+import Pagination from 'rc-pagination'
 import tw from 'tailwind-styled-components'
 
-export const TWPagination = tw.div`
+export const TWPagination = tw(Pagination)`
     flex
-    mt-5
     w-full
-    flex-wrap
-    justify-between
+    relative
+    items-center
+    justify-end
 `
 export const TWPaginationLeft = tw.div`
     flex
     text-xs
+    absolute
+    left-0
     font-normal
     items-center
     text-white
@@ -20,12 +23,15 @@ export const TWPaginationRight = tw.div`
     items-center
 `
 export const TWPaginationBtn = tw.button`
-    bg-[#3C3C3C]
-    rounded-[60px]
+    h-[25px]
     uppercase
-    text-white
-    text-[10px]
     font-bold
     w-[116px]
-    h-[25px]
+    text-[10px]
+    text-white
+    duration-200
+    bg-[#3C3C3C]
+    rounded-[60px]
+    transition-all
+    hover:opacity-60
 `

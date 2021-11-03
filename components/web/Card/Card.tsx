@@ -1,14 +1,17 @@
 import React from 'react'
+import Link from 'next/link'
 import { INews } from '@typings/news'
+import { toast } from 'react-toastify'
 import { useAppDispatch, useAppSelector } from '@store/hooks'
 import { setBookMarkSlice, unsetBookMarkSlice } from '@store/slices'
-import { ArrowCircleIcon, FavoriteIcon } from '@components/Icons'
+import { ArrowCircleIcon, FavoriteIcon, UnFavoriteIcon } from '@components/Icons'
 import {
   TWCard,
   TWCardTop,
   TWCardTag,
   TWCardBottom,
   TWCardToolBar,
+  TWCardSummary,
   TWCardHeadLine,
   TWCardToolBarDate,
   TWCardImportantTag,
@@ -16,8 +19,6 @@ import {
   TWCardToolBarReadDivider,
   TWCardToolbarReadWrapper,
 } from './tw-styled'
-import UnFavoriteIcon from '@components/Icons/UnFavoriteIcon'
-import { toast } from 'react-toastify'
 
 interface IProps {
   news: INews
@@ -42,7 +43,7 @@ const Card: React.FC<IProps> = ({ is_latest, news }) => {
     <TWCard
       $latest={is_latest}
       style={{
-        backgroundImage: `url('${news.image}'), linear-gradient(180deg, rgba(28, 58, 82, 0) 0%, #05141b 100%)`,
+        backgroundImage: `url('${news.image}'), linear-gradient(180deg, rgba(28, 58, 82, 0) 0%, rgba(5, 20, 27, 0.5) 100%)`,
       }}
     >
       <TWCardTop>
@@ -50,9 +51,10 @@ const Card: React.FC<IProps> = ({ is_latest, news }) => {
         {is_latest ? <TWCardImportantTag>latest research</TWCardImportantTag> : null}
       </TWCardTop>
       <TWCardBottom>
-        <TWCardHeadLine $latest={is_latest}>
-          {news.headline.length > 69 ? news.headline.slice(0, 70) + '...' : news.headline}
+        <TWCardHeadLine href={news.url} $latest={is_latest} target="_blank" rel="noreferrer">
+          {news.headline}
         </TWCardHeadLine>
+        <TWCardSummary>{news.summary.length > 89 ? news.summary.slice(0, 90) + '...' : news.summary}</TWCardSummary>
         <TWCardToolBar>
           {is_latest ? (
             <TWCardToolbarReadWrapper>

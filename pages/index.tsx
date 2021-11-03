@@ -1,13 +1,16 @@
 import React from 'react'
-import { API } from '@api/base'
+import { AxiosResponse } from 'axios'
 import { INews } from '@typings/news'
+import { useSearch } from '@lib/hooks'
 import { Layout } from '@components/common'
+import { setNewsSlice } from '@store/slices'
+import { getNewsRequest } from '@api/requests'
+import { UtilityService } from '@lib/services'
 import { GetStaticProps, NextPage } from 'next'
 import { Card, Pagination } from '@components/web'
-import { UtilityService } from '@lib/utility-service'
 import { useAppDispatch, useAppSelector } from '@store/hooks'
 import { TWNewsLatestSection, TWNewsWrapper, TWNewsWrapperSection } from '@assets/news-tw-styled'
-import { setInitialNewsSlice } from '@store/slices'
+import { Loader } from '@components/Icons'
 
 interface IProps {
   latest: INews
@@ -15,42 +18,53 @@ interface IProps {
 }
 
 const Index: NextPage<IProps> = ({ latest, initialNews }) => {
-  const { news, searched } = useAppSelector((state) => state.news)
   const dispatch = useAppDispatch()
+  const { news } = useAppSelector((state) => state.news)
+  const { results, setResults } = useSearch({ data: news })
+
+  const [page, setPage] = React.useState<number>(1)
+
+  const pageNews = UtilityService.paginate(
+    results.filter((item) => item.id !== latest.id),
+    page
+  )
 
   React.useEffect(() => {
-    dispatch(setInitialNewsSlice(initialNews))
-    // eslint-disable-next-line
-  }, [initialNews])
+    dispatch(setNewsSlice(initialNews))
+    setResults(initialNews)
+  }, [])
 
   return (
     <Layout divide_grid>
       <TWNewsLatestSection>
-        <Card news={latest} is_latest />
+        <React.Suspense fallback={<Loader />}>
+          <Card news={latest} is_latest />
+        </React.Suspense>
       </TWNewsLatestSection>
       <TWNewsWrapperSection>
-        <TWNewsWrapper>{news !== null && news.map((item) => <Card key={item.id} news={item} />)}</TWNewsWrapper>
-        <Pagination news={searched.length > 0 ? searched : initialNews} />
+        <TWNewsWrapper>
+          <React.Suspense fallback={<Loader />}>
+            {pageNews.map((item) => (
+              <Card key={item.id} news={item} />
+            ))}
+          </React.Suspense>
+        </TWNewsWrapper>
+        <Pagination data={initialNews} defaultPageSize={6} onChange={(page) => setPage(page)} current={page} />
       </TWNewsWrapperSection>
     </Layout>
   )
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  const { data }: { data: INews[] } = await API
+  const { data }: AxiosResponse<INews[]> = await getNewsRequest()
   const format = (index: number) => UtilityService.formatDate(index, data)
 
-  const latest: INews = {
-    ...data[0],
-    datetime: format(0),
-  }
+  const latest: INews = { ...data[0], datetime: format(0) }
 
-  const initialNews = data
-    .map((item, index) => ({
-      ...item,
-      datetime: format(index),
-    }))
-    .filter((item) => item.id !== latest.id)
+  const initialNews = data.map((item, index) => ({
+    ...item,
+    datetime: format(index),
+  }))
 
   return {
     props: {

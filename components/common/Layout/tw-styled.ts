@@ -1,7 +1,7 @@
 import tw from 'tailwind-styled-components'
 
 type Inner = {
-  $divide: boolean
+  $divide?: boolean
 }
 
 export const TWLayout = tw.div`
@@ -19,8 +19,8 @@ export const TWLayoutInner = tw.div`
     2xl:w-full
     w-[1439px]
 `
-export const TWLayoutInnerContent = tw.div<Inner>`
+export const TWLayoutInnerContent = tw.main<Inner>`
     flex
-    xl:flex-col
-    justify-between
+    ${(p) => (p?.$divide ? 'xl:flex-col' : '')}
+    ${(p) => (p?.$divide ? 'justify-between' : 'justify-start')}
 `
