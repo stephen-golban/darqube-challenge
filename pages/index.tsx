@@ -2,6 +2,7 @@ import React from 'react'
 import { AxiosResponse } from 'axios'
 import { INews } from '@typings/news'
 import { useSearch } from '@lib/hooks'
+import { Loader } from '@components/Icons'
 import { Layout } from '@components/common'
 import { setNewsSlice } from '@store/slices'
 import { getNewsRequest } from '@api/requests'
@@ -10,7 +11,6 @@ import { GetStaticProps, NextPage } from 'next'
 import { Card, Pagination } from '@components/web'
 import { useAppDispatch, useAppSelector } from '@store/hooks'
 import { TWNewsLatestSection, TWNewsWrapper, TWNewsWrapperSection } from '@assets/news-tw-styled'
-import { Loader } from '@components/Icons'
 
 interface IProps {
   latest: INews

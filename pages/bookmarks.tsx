@@ -8,6 +8,7 @@ import { useSearch } from '@lib/hooks'
 import { Layout } from '@components/common'
 import { useAppSelector } from '@store/hooks'
 import { UtilityService } from '@lib/services'
+import { TWBookmarksEmptyMessage, TWBookmarksEmptyMessageLink, TWBookmarksSection } from '@assets/bookmarks-tw-styled'
 
 const Bookmarks: NextPage = () => {
   const { bookmarks, news } = useAppSelector((state) => state.news)
@@ -20,18 +21,18 @@ const Bookmarks: NextPage = () => {
 
   return (
     <Layout>
-      <div className="flex flex-wrap justify-start gap-5">
+      <TWBookmarksSection>
         {results.length < 1 ? (
-          <div className="text-white font-bold text-2xl">
+          <TWBookmarksEmptyMessage>
             You haven't saved any news, try adding few{' '}
-            <Link href="/">
-              <a className="text-indigo-500 underline">news</a>
+            <Link href="/" passHref>
+              <TWBookmarksEmptyMessageLink>news</TWBookmarksEmptyMessageLink>
             </Link>
-          </div>
+          </TWBookmarksEmptyMessage>
         ) : (
           results.map((item) => <Card key={item.id} news={item} />)
         )}
-      </div>
+      </TWBookmarksSection>
     </Layout>
   )
 }
