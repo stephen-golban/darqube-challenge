@@ -7,7 +7,7 @@ import { Layout } from '@components/common'
 import { setNewsSlice } from '@store/slices'
 import { getNewsRequest } from '@api/requests'
 import { UtilityService } from '@lib/services'
-import { GetStaticProps, NextPage, NextPageContext } from 'next'
+import { GetStaticProps, NextPage } from 'next'
 import { Card, Pagination } from '@components/web'
 import { useAppDispatch, useAppSelector } from '@store/hooks'
 import { TWNewsLatestSection, TWNewsWrapper, TWNewsWrapperSection } from '@assets/news-tw-styled'
@@ -17,7 +17,7 @@ interface IProps {
   initialNews: INews[]
 }
 
-const Index = ({ latest, initialNews }: IProps) => {
+const Index: NextPage<IProps> = ({ latest, initialNews }) => {
   const dispatch = useAppDispatch()
   const { news } = useAppSelector((state) => state.news)
   const { results, setResults } = useSearch({ data: news })
@@ -55,24 +55,26 @@ const Index = ({ latest, initialNews }: IProps) => {
   )
 }
 
-Index.getInitialProps = async (ctx: NextPageContext) => {
-  try {
-    const { data }: AxiosResponse<INews[]> = await getNewsRequest()
-    const format = (index: number) => UtilityService.formatDate(index, data)
+export const getStaticProps: GetStaticProps = async () => {
+  const { data }: AxiosResponse<INews[]> = await getNewsRequest()
+  const format = (index: number) => UtilityService.formatDate(index, data)
 
-    const latest: INews = { ...data[0], datetime: format(0) }
+  const latest: INews = { ...data[0], datetime: format(0) }
 
-    const initialNews = data.map((item, index) => ({
-      ...item,
-      datetime: format(index),
-    }))
-
+  const initialNews = data.map((item, index) => ({
+    ...item,
+    datetime: format(index),
+  }))
+  if (!data) {
     return {
+      notFound: true,
+    }
+  }
+  return {
+    props: {
       initialNews,
       latest,
-    }
-  } catch (error) {
-    ctx.res?.writeHead(404).end()
+    },
   }
 }
 
