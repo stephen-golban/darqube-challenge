@@ -17,7 +17,7 @@ interface IProps {
   initialNews: INews[]
 }
 
-const Index: NextPage<IProps> = ({ latest, initialNews }) => {
+const Index = ({ latest, initialNews }: IProps) => {
   const dispatch = useAppDispatch()
   const { news } = useAppSelector((state) => state.news)
   const { results, setResults } = useSearch({ data: news })
@@ -55,7 +55,7 @@ const Index: NextPage<IProps> = ({ latest, initialNews }) => {
   )
 }
 
-export const getStaticProps: GetStaticProps = async () => {
+Index.getInitialProps = async () => {
   const { data }: AxiosResponse<INews[]> = await getNewsRequest()
   const format = (index: number) => UtilityService.formatDate(index, data)
 
@@ -67,10 +67,8 @@ export const getStaticProps: GetStaticProps = async () => {
   }))
 
   return {
-    props: {
-      initialNews,
-      latest,
-    },
+    initialNews,
+    latest,
   }
 }
 
